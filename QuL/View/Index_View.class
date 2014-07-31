@@ -1,0 +1,118 @@
+<?php
+	
+	/**
+	 * Classe View da página principal do site.
+	 * @author  Juliano S. De Cezaro <julianodecezaro@uatasoft.com.br>
+	 * @version 1.0.0 criada em 19/04/2013 às 10:01
+	 * 
+	 */
+	class Index_View extends TiE_View
+	{
+		/**
+		 * Método construtor da classe
+		 * @author  Juliano S. De Cezaro <julianodecezaro@uatasoft.com.br>
+		 * @version 1.0.0 criada em 19/04/2013 às 10:54
+		 * @param   Object $_db Objeto de conexão com o BD.
+		 */
+		public function __construct(&$_db)
+		{
+			//$this->ErrorCreator_Controller = new ErrorCreator_Controller($this);
+			$this->db = $_db;
+			$this->controller = new Index_Controller($this);
+		}
+
+		/**
+		 * Cria o header da página.
+		 * @author  Juliano S. De Cezaro <julianodecezaro@uatasoft.com.br>
+		 * @version 1.0.0 criada em 19/04/2013 às 10:52
+		 * @return  Object Retorna o elemento header do html5.
+		 */
+		public function getHeader()
+		{
+			GLOBAL $_PW;
+			$logo = new img("{ id: logo, src : ".$_PW['IMAGES']."logo.png }");
+			$header = new div("{ id: header }");
+			$div = new div("{class: container}");
+			$div->append($logo);
+			$header->append($div);
+			return $header;
+		}
+
+		/**
+		 * Cria o menu da página.
+		 * @author  Juliano S. De Cezaro <julianodecezaro@uatasoft.com.br>
+		 * @version 1.0.0 criada em 19/04/2013 às 10:56
+		 * @return  Object Retorna o elemento nav do html5.
+		 */
+		public function getNav()
+		{
+			GLOBAL $_PW;
+			$nav = new nav();
+			return $nav;
+		}
+
+		/**
+		 * Cria o conteúdo da página.
+		 * @author  Juliano S. De Cezaro <julianodecezaro@uatasoft.com.br>
+		 * @version 1.0.0 criada em 19/04/2013 às 10:58
+		 * @return  Object Retorna o elemento section do html5.
+		 */
+		public function getContent()
+		{
+			$section = new section();
+			return $section;
+		}
+
+		public function getASide()
+		{
+			$aside = new div('{class: aside}');
+			return $aside;
+		}
+
+		/**
+		 * Cria o rodapé da página.
+		 * @author  Juliano S. De Cezaro <julianodecezaro@uatasoft.com.br>
+		 * @version 1.0.0 criada em 19/04/2013 às 10:59
+		 * @return  Object Retorna o elemento footer do html5.
+		 */
+		public function getFooter()
+		{
+			$footer = new footer();
+			$footer->append(new text("Footer"));
+			return $footer;
+		}
+		
+		/**
+		 * Inicializa e constrói a página.
+		 * @author  Juliano S. De Cezaro <julianodecezaro@uatasoft.com.br>
+		 * @version 1.0.0 criada em 19/04/2013 às 11:00		 
+		 */
+		public function __ini()
+		{
+			GLOBAL $_PW;
+			#CRIA O CONTAINER
+			$container = new div("{id: container}");
+
+			#CRIA O CABEÇALHO
+			$header = $this->getHeader();
+			#CRIA O MENU
+			$nav = $this->getNav();
+			#CRIA O CONTEÚDO
+			$section = $this->getContent();
+			#CRIA SIDE BAR
+			$aside = $this->getASide();
+			#CRIA O RODAPÉ
+			//$footer = $this->getFooter();
+
+			#ADICIONA AO CONTAINER
+			$container->append($header);
+			$container->append($nav);
+			//$container->append($footer);
+
+			#GERA O CONTAINER
+			$container->generate();
+		}
+		
+	}
+	
+?>

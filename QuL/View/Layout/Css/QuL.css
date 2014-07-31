@@ -1,0 +1,9 @@
+body{
+	margin: 0px;
+	padding: 0px;
+	font: normal 12 Tahoma, Verdana, Arial;
+}
+
+#header{
+	background-color: #333333;
+}

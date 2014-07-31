@@ -1,0 +1,295 @@
+<?php
+
+class TiE_Query
+{
+	public function __construct(&$_db)
+	{
+		$this->db = $_db;
+	}
+
+	/**
+	 * [execute description]
+	 * @author  Juliano S. De Cezaro <julianodecezaro@gmail.com>
+	 * @version 1.0.0 criado em 17/03/2013 as 17:35
+	 * @return  [type] [description]
+	 */
+	public function execute()	
+	{
+		$db = new TiE_Db($this->db);
+		if($this->__selecting){
+			$exe = $db->getMatrix($this->get());
+		}else{
+			$exe = $db->execute($this->get());
+		}
+		if(!$db->error){			
+
+			return $exe;
+		}else {
+			$this->error = $db->error;
+			dump($this->error);
+			return false;
+		}
+	}
+
+	public function cast($_column)
+	{
+		if(is_array($_column->value) && count($_column->value)){
+			$num = count($_column->value);
+			$in = "(";
+			foreach ($_column->value as $key => $value) {
+				$i++;
+				$c = (object)null;
+				$c->type = $_column->type;
+				$c->value = $value;
+				$in .= TiE_Query::cast($c);
+				if($i < $num) $in .= ", ";
+			}
+			return $in.")";
+		}
+		switch (trim(strtolower($_column->type))) {
+			case 'character varying':
+			case 'varchar':
+			case 'text':
+			case 'character':
+			case 'char':
+			case 'timestamp':
+			case 'timestamp with time zone':
+			case 'timestamp without time zone':
+			case 'interval':
+			case 'date':
+			case 'time':
+			case 'time with time zone':
+			case 'time without time zone':
+			case 'bytea':
+			case 'boolean':
+			case 'bool':
+				return "'".pg_escape_string($_column->value)."'";
+				break;
+
+			case 'integer':
+			case 'int2':
+			case 'int4':
+			case 'int8':
+			case 'smallint':
+			case 'bigint':
+			case 'decimal':
+			case 'numeric':
+			case 'real':
+			case 'doubleprecision':
+			case 'serial':
+			case 'bigserial':
+			default:
+				return pg_escape_string($_column->value);
+				break;
+		}
+	}
+
+	public function select($_cols = "*")
+	{
+		$this->__selecting = true;
+		$numCols = count($_cols);
+		$sql = "SELECT ";
+		if (is_array($_cols) && $numCols > 0){			
+			foreach ($_cols as $key => $value) {
+				$i++;
+				$sql .= $value;
+				if($i < $numCols) $sql .= ", ";				
+			}
+		}else {
+			$sql .= $_cols;
+		}
+		$this->__sql .= $sql.PHP_EOL;
+	}
+
+	public function from($_table)
+	{
+		$this->__table = $_table;
+		$this->__sql .= "FROM ".$_table->getTable().PHP_EOL;	
+	}
+
+	public function where($_cols)
+	{
+		$_cols = (array)$_cols;
+
+		//dump($_cols);
+		if($this->__onlypk || $this->__updating || $this->__inserting){
+			$_cols = TiE_Query::filter(1, $this->__table, $_cols);
+		}
+
+		$numCols = count($_cols);
+		$sql = "WHERE ";
+		if (is_array($_cols) && $numCols > 0){
+			foreach ($_cols as $key => $column) {
+				$i++;
+				$sql .= $key.(is_array($column->value) ? ($column->not ? " not" : "")." in ": ($column->not ? " !" : " ")."= ").TiE_Query::cast($column);
+				if($i < $numCols) $sql .= " AND ";				
+			}			
+		}
+		$this->__sql .= $sql.PHP_EOL;
+	}
+
+	public function orderby()
+	{
+
+	}
+
+	public function limit()
+	{
+
+	}
+
+	public function offset()
+	{
+
+	}
+
+	public function having()
+	{
+
+	}
+
+	public function joinByFk($_t1, $_t2)
+	{
+		$fks = $_t2->getFkName($_t1->getTable());
+		$w = 1;
+		if(!isset($fks)){
+			$fks = $_t1->getFkName($_t2->getTable());
+			$w = 2;
+		}
+		if($w == 1){
+			$__fks = $_t2->getFk($fks);
+		}else if($w == 2){
+			$__fks = $_t1->getFk($fks);
+		}
+		$num = count($__fks->relations);
+		if(is_array($__fks->relations) && $num > 0){
+			foreach ($__fks->relations as $key => $value) {
+				$i++;
+				$sql .= $__fks->table.".".$value[0]." = ".$__fks->reltable.".".$value[1];
+				if($i < $num) $sql .= " AND ";
+			}
+		}
+		return "ON(".$sql.")".PHP_EOL;
+	}
+
+	public function join($_table)
+	{
+		$this->__sql .= "\tJOIN ".$_table->getTable()." ".TiE_Query::joinByFk($this->__table, $_table);
+		$this->__table = $_table;		
+	}
+
+	public function leftjoin($_table)
+	{
+		$this->__sql .= "\tLEFT JOIN ".$_table->getTable()." ".TiE_Query::joinByFk($this->__table, $_table);
+		$this->__table = $_table;
+	}
+
+	public function rightjoin($_table)
+	{
+		$this->__sql .= "\tRIGHT JOIN ".$_table->getTable()." ".TiE_Query::joinByFk($this->__table, $_table);
+		$this->__table = $_table;
+	}
+
+	public function innerjoin($_table)
+	{
+		$this->__sql .= "\tINNER JOIN ".$_table->getTable()." ".TiE_Query::joinByFk($this->__table, $_table);
+		$this->__table = $_table;
+	}
+
+	public function outerjoin($_table)
+	{
+		$this->__sql .= "\tOUTER JOIN ".$_table->getTable()." ".TiE_Query::joinByFk($this->__table, $_table);
+		$this->__table = $_table;
+	}
+
+	public function update($_table)
+	{
+		$this->__updating = true;
+		$this->__sql .= "UPDATE ".$_table->getTable().PHP_EOL;
+		$this->__table = $_table;
+	}
+
+	public function set($_cols)
+	{
+		$_cols = (array)$_cols;
+		$_cols = TiE_Query::filter(2, $this->__table, $_cols);	
+
+		$numCols = count($_cols);
+		$sql = "SET ";
+		if (is_array($_cols) && $numCols > 0){
+			foreach ($_cols as $key => $column) {
+				$i++;
+				$sql .= $key." = ".TiE_Query::cast($column);
+				if($i < $numCols) $sql .= ", ";
+			}
+		}
+		$this->__sql .= $sql.PHP_EOL;
+	}
+
+	public function insert($_table)
+	{
+		$this->__inserting = true;
+		$sql = "INSERT INTO ".$_table->getTable();
+		$this->__table = $_table;
+		$this->__sql .= $sql.PHP_EOL;
+	}
+
+	public function values($_cols)
+	{
+		$_cols = (array)$_cols;
+		$numCols = count($_cols);
+		$sql = "(";
+		if (is_array($_cols) && $numCols > 0){
+			foreach ($_cols as $key => $column) {
+				$i++;
+				$sql .= $key;
+				if($i < $numCols) $sql .= ", ";
+			}			
+		}
+		$sql .= ")".PHP_EOL;
+		$i = 0;
+		$sql .= "VALUES(";
+		if (is_array($_cols) && $numCols > 0){
+			foreach ($_cols as $key => $column) {
+				$i++;
+				$sql .= TiE_Query::cast($column);
+				if($i < $numCols) $sql .= ", ";
+			}			
+		}
+		$sql .= ")";
+		$this->__sql .= $sql.PHP_EOL;
+	}
+
+	public function get()
+	{
+		return $this->__sql;
+	}
+
+	public function filter($_type, $_table, $_cols)
+	{
+		$pks = $_table->getPk();
+		if (is_array($_cols) && count($_cols) > 0){
+			foreach ($_cols as $key => $column) {
+				switch ($_type) {
+					case 1:
+						if(in_array($key, $pks)){
+							$_cols2[$key] = $column;
+						}
+						break;
+					case 2:
+						if(!in_array($key, $pks)){
+							$_cols2[$key] = $column;
+						}
+						break;
+					default:					
+						$_cols2[$key] = $column;
+						break;
+				}				
+			}
+		}
+		return $_cols2;
+	}
+
+}
+
+?>
