@@ -9,7 +9,11 @@ $DEFAULT_DB = ""; #banco://usuario:senha@servidor/base
 
 GLOBAL $_PW; #PATH_WEB
 ## ROOT ##
-	$_PW['ROOT'] = "http://".$_SERVER['HTTP_HOST']."/uatasoft/qul/";		
+	if($_SERVER['HTTP_HOST'] == 'qul.us'){
+		$_PW['ROOT'] = "http://".$_SERVER['HTTP_HOST']."/";		
+	}else {
+		$_PW['ROOT'] = "http://".$_SERVER['HTTP_HOST']."/uatasoft/qul/";
+	}
 ############
 
 $_PW['CONTROLLER'] = $_PW['ROOT']."Controller/";
