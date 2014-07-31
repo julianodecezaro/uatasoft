@@ -1,6 +1,6 @@
 <?php
 
-ini_set('include_path', 'C:\\Bitnami\\wappstack-5.4.30-0\\apache2\\htdocs\\__TiE\\');
+ini_set('include_path', 'C:\\Bitnami\\wappstack-5.4.30-0\\apache2\\htdocs\\uatasoft\\__TiE\\');
 //var_dump(getcwd());
 
 GLOBAL $DEFAULT_DB;
@@ -9,7 +9,7 @@ $DEFAULT_DB = ""; #banco://usuario:senha@servidor/base
 
 GLOBAL $_PW; #PATH_WEB
 ## ROOT ##
-	$_PW['ROOT'] = "http://".$_SERVER['HTTP_HOST']."/qul/";		
+	$_PW['ROOT'] = "http://".$_SERVER['HTTP_HOST']."/uatasoft/qul/";		
 ############
 
 $_PW['CONTROLLER'] = $_PW['ROOT']."Controller/";
