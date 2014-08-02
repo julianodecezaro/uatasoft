@@ -1,0 +1,40 @@
+<?php
+
+	class Page_Controller extends TiE_Controller
+	{
+		public $sequencePage;
+		
+		public function __construct(&$_view)
+		{
+			$this->view = $_view;
+			//$this->ErrorCreator_Model = new ErrorCreator_Model($this->view->db);
+		}
+		
+		public function init()
+		{
+			$this->view->init();
+		}
+
+		public function search()
+		{
+			$this->view->search();
+		}
+		
+		public function controller()
+		{
+			$this->loadData();
+			$this->view->assign($_REQUEST);
+			//dump($_REQUEST);
+			switch($this->sequencePage) {
+				default:
+					$this->init();
+					break;
+				case 'search':
+					$this->search();
+					break;		
+			}
+		}
+		
+	}
+	
+?>

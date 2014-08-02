@@ -2,8 +2,15 @@ body{
 	margin: 0px;
 	padding: 0px;
 	font: normal 12 Tahoma, Verdana, Arial;
+	margin-top: 42px;
 }
 
 #header{
 	background-color: #333333;
+	padding: 8px;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	color: #FFFFFF;
+	width: 100%;
 }

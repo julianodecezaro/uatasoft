@@ -1,0 +1,38 @@
+<?php
+
+	class QuL_Controller extends TiE_Controller
+	{
+		public $sequencePage;
+		
+		public function __construct(&$_view)
+		{
+			$this->view = $_view;
+			//$this->ErrorCreator_Model = new ErrorCreator_Model($this->view->db);
+		}
+		
+		public function getPage()
+		{
+			if($this->view->initiating != 1){
+				session_start();
+				$_SESSION['page'] = $this->view->sequencePage;
+				session_write_close();
+			}
+			dump($_SESSION['page']);
+			$this->view->getPage();
+		}
+
+		public function controller()
+		{
+			$this->loadData();
+			$this->view->assign($_REQUEST);
+			//dump($_REQUEST);
+			switch($this->sequencePage) {
+				default:
+					$this->getPage();
+					break;
+			}
+		}
+		
+	}
+	
+?>

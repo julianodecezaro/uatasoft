@@ -31,4 +31,8 @@ require_once "View/Layout/QuL_Decorator.class";
 GLOBAL $CUSTOM_DECORATOR;
 $CUSTOM_DECORATOR = "QuL_Decorator";
 
+session_start();
+$_SESSION['page'];
+session_write_close();
+
 ?>

@@ -53,8 +53,10 @@
             echo "<title>".$this->title."</title>".CRLF;
             echo "<style>@import \"".$_PW['CSS']."QuL.css"."\"</style>".CRLF;
             echo "<script src=\"".$_PW['JS']."jquery.min.js"."\"></script>".CRLF;
+            echo "<script src=\"".$_PW['JS']."QuL.js"."\"></script>".CRLF;
 			echo "</head>".CRLF;
 			echo "<body onLoad=\"\">".CRLF;
+			echo "<div id=\"header\"><input type=\"button\" value=\"Início\" id=\"btn_inicio\" /><input type=\"button\" value=\"Busca\" id=\"btn_busca\" /></div>";
 			$this->instance->run();
 			echo CRLF."</body>".CRLF;
 			echo "</html>".CRLF;

@@ -1,0 +1,62 @@
+<?php
+	
+	require_once "Controller/Page_Controller.class";
+
+	/**
+	 * Classe View da página principal do site.
+	 * @author  Juliano S. De Cezaro <julianodecezaro@uatasoft.com.br>
+	 * @version 1.0.0 criada em 31/07/2014 às 14:30
+	 * 
+	 */
+	class Page_View extends TiE_View
+	{
+		/**
+		 * Método construtor da classe
+		 * @author  Juliano S. De Cezaro <julianodecezaro@uatasoft.com.br>
+		 * @version 1.0.0 criada em 31/07/2014 às 14:31
+		 * @param   Object $_db Objeto de conexão com o BD.
+		 */
+		public function __construct(&$_db)
+		{
+			//$this->ErrorCreator_Controller = new ErrorCreator_Controller($this);
+			$this->db = $_db;
+			$this->controller = new Page_Controller($this);
+		}
+
+		public function setSequencePage($_sequencePage)
+		{
+			$this->sequencePage = $_sequencePage;
+		}
+
+		public function getSequencePage()
+		{
+			return $this->sequencePage;
+		}
+
+		/**
+		 * Inicializa e constrói a página.
+		 * @author  Juliano S. De Cezaro <julianodecezaro@uatasoft.com.br>
+		 * @version 1.0.0 criada em 31/07/2014 às 14:35		 
+		 */
+		public function init()
+		{
+			$div = new div();
+			$div->append(new text("Esta é a página inicial!"));
+			$div->generate();
+		}
+
+		/**
+		 * Inicializa e constrói a página.
+		 * @author  Juliano S. De Cezaro <julianodecezaro@uatasoft.com.br>
+		 * @version 1.0.0 criada em 31/07/2014 às 14:35		 
+		 */
+		public function search()
+		{
+			$div = new div();
+			$div->append(new text("Esta é a página da busca!"));
+			$div->generate();
+		}
+		
+	}
+	
+?>

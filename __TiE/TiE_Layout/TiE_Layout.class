@@ -28,6 +28,10 @@
 					require_once $_PATH['FRAMEWORK']['DECORATORS']."TiE_Decorator_HTML.class";
 					$this->objDecorator = new TiE_HTML_Default($this->instance, $this->title);
 					break;
+				case "NULL":
+					require_once $_PATH['FRAMEWORK']['DECORATORS']."TiE_Decorator_NULL.class";
+					$this->objDecorator = new TiE_Decorator_NULL($this->instance);
+					break;
 			}
 		}
 		

@@ -1,0 +1,48 @@
+<?php
+
+	require_once "View/Page_View.class";
+	require_once "Controller/QuL_Controller.class";
+	
+	/**
+	 * Classe View da página principal do site.
+	 * @author  Juliano S. De Cezaro <julianodecezaro@uatasoft.com.br>
+	 * @version 1.0.0 criada em 31/07/2014 às 14:30
+	 * 
+	 */
+	class QuL_View extends TiE_View
+	{
+		public $sequencePage;
+		public $initiating;
+
+		/**
+		 * Método construtor da classe
+		 * @author  Juliano S. De Cezaro <julianodecezaro@uatasoft.com.br>
+		 * @version 1.0.0 criada em 31/07/2014 às 14:31
+		 * @param   Object $_db Objeto de conexão com o BD.
+		 */
+		public function __construct(&$_db)
+		{
+			//$this->ErrorCreator_Controller = new ErrorCreator_Controller($this);
+			$this->db = $_db;
+			$this->controller = new QuL_Controller($this);
+		}
+
+		/**
+		 * Inicializa e constrói a página.
+		 * @author  Juliano S. De Cezaro <julianodecezaro@uatasoft.com.br>
+		 * @version 1.0.0 criada em 31/07/2014 às 14:35		 
+		 */
+		public function getPage()
+		{
+			//$session_page = $_SESSION['page'];
+			//if(!empty($session_page)){
+			//	$instance = new $session_page($this->db);
+			//}
+			$instance = new Page_View($this->db);
+			//$instance->setSequencePage($this->sequencePage);
+			$instance->run();
+		}
+		
+	}
+	
+?>
